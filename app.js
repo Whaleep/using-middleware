@@ -10,8 +10,22 @@ function toLocalTime(date) {
 }
 
 app.use((req, res, next) => {
+  // try hrtime
+  const hrtimeStart = process.hrtime()
+  // try new Date
   const timeStart = new Date()
-  console.log(`${toLocalTime(timeStart)} | ${req.method} from ${req.url}`)
+  // console.log(`${toLocalTime(timeStart)} | ${req.method} from ${req.url}`)
+
+  res.on('finish', () => {
+    // try hrtime
+    const hrtimeEnd = process.hrtime(hrtimeStart)
+    const totalHrtime = hrtimeEnd[0] * 1e9 + hrtimeEnd[1]
+    console.log(`${toLocalTime(timeStart)} | ${req.method} from ${req.url} | total time: ${totalHrtime}ns`)
+    // try new Date
+    const timeEnd = new Date()
+    console.log(`${toLocalTime(timeStart)} | ${req.method} from ${req.url} | total time: ${timeEnd - timeStart}ms`)
+  })
+
   next()
 })
 
