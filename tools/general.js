@@ -1,6 +1,6 @@
 
 // "2021-07-17T19:10:20.123Z" -> "2021-07-18 03:10:20" (GMT+0800)
-function toLocalTime(date) {
+function toLocalTime (date) {
   return new Date(date.getTime() - (date.getTimezoneOffset() * 60 * 1000))
     .toISOString()
     .replace('T', ' ')
@@ -8,23 +8,23 @@ function toLocalTime(date) {
 }
 
 const fs = require('fs')
-const HTTPLOGS = './logs/httpLogs.log'
+const HTTPLOGS = './httpLogs.log'
 
-function conutByDate(req, res, next) {
+function conutByDate (req, res, next) {
   const timeStart = new Date()
   res.on('finish', () => {
     const timeEnd = new Date()
     const totaltime = timeEnd - timeStart
     const log = `${toLocalTime(timeStart)} | ${req.method} from ${req.url} | total time: ${totaltime}ms`
     console.log(log)
-    fs.appendFile(HTTPLOGS, log +'\n', (error) => {
+    fs.appendFile(HTTPLOGS, log + '\n', (error) => {
       if (error) console.log(error)
     })
   })
   next()
 }
 
-function conutByHrtime(req, res, next) {
+function conutByHrtime (req, res, next) {
   const timeStart = process.hrtime()
 
   res.on('finish', () => {
